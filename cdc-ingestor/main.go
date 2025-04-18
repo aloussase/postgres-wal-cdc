@@ -21,8 +21,8 @@ type Change struct {
 	ColumnValues []interface{} `json:"columnvalues"`
 }
 
-func createPgSlot(username string, slot string) {
-	cmd := exec.Command("pg_recvlogical", "-U", username, "-d", "postgres", "--slot", slot, "--create-slot", "-P", "wal2json")
+func createPgSlot(slot string) {
+	cmd := exec.Command("pg_recvlogical", "-d", "postgres", "--slot", slot, "--create-slot", "-P", "wal2json")
 	if err := cmd.Run(); err != nil {
 		log.Println("Could not creating slot, does it already exist?", err)
 	}
@@ -41,13 +41,12 @@ func startPgRecv(slot string) io.ReadCloser {
 }
 
 var (
-	username        = "aloussase"
-	slot            = "test_slot"
-	topic    string = "cdc-changes"
+	slot         = "test_slot"
+	topic string = "cdc-changes"
 )
 
 func main() {
-	createPgSlot(username, slot)
+	createPgSlot(slot)
 
 	out := startPgRecv(slot)
 	defer out.Close()
