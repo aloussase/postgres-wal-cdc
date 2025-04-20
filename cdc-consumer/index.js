@@ -50,15 +50,22 @@ const consumer = kafka.consumer({
 
       const msg = message.value.toString()
       const json = JSON.parse(msg).change[0]
-      const payload = {
-        kind: json.kind,
-        table: json.table,
-        columns: json.columnnames,
-        values: json.columnvalues,
-      }
 
-      for (const ws of connections) {
-        ws.send(JSON.stringify(payload));
+      try {
+        const payload = {
+          kind: json.kind,
+          table: json.table,
+          columns: json.columnnames,
+          values: json.columnvalues,
+        }
+
+        console.log('Sending message to clients:', payload);
+
+        for (const ws of connections) {
+          ws.send(JSON.stringify(payload));
+        }
+      } catch (err) {
+        console.log('Error while processing change message', err)
       }
     },
   })
