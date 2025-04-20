@@ -12,6 +12,7 @@
   "author": "Alexander Goussas",
   "license": "MIT",
   "dependencies": {
-    "kafkajs": "^2.2.4"
+    "kafkajs": "^2.2.4",
+    "ws": "^8.18.1"
   }
 }
