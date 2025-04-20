@@ -9,7 +9,7 @@ const wss = new WebSocketServer({ port: serverPort });
 
 const kafka = new Kafka({
   clientId: 'cdc-consumer',
-  brokers: [brokerAddr]
+  brokers: [brokerAddr],
 })
 
 const connections = new Set();
@@ -30,7 +30,8 @@ wss.on('connection', (ws) => {
 
 
 const consumer = kafka.consumer({
-  groupId: 'cdc-group-1'
+  groupId: 'cdc-group-1',
+  allowAutoTopicCreation: true,
 });
 
 (async function() {

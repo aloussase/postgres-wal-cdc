@@ -22,15 +22,30 @@ type Change struct {
 	ColumnValues []interface{} `json:"columnvalues"`
 }
 
+var (
+	pgHostName string = "localhost"
+	pgUserName string = "postgres"
+)
+
 func createPgSlot(slot string) {
-	cmd := exec.Command("pg_recvlogical", "-d", "postgres", "--slot", slot, "--create-slot", "-P", "wal2json")
-	if err := cmd.Run(); err != nil {
-		log.Println("Could not creating slot, does it already exist?", err)
+	cmd := exec.Command("pg_recvlogical", "-w", "-h", pgHostName, "-U", pgUserName, "-d", "postgres", "--slot", slot, "--create-slot", "-P", "wal2json")
+	log.Println("Creating slot with command: ", cmd.String())
+
+	cmd.Stderr = os.Stderr
+	cmd.Stdout = os.Stdout
+
+	if err := cmd.Start(); err != nil {
+		log.Fatal("Failed to start command:", err)
+	}
+
+	if err := cmd.Wait(); err != nil {
+		log.Println("Failed to wait for command:", err)
 	}
 }
 
 func startPgRecv(slot string) io.ReadCloser {
-	cmd := exec.Command("pg_recvlogical", "-d", "postgres", "-n", "--slot", slot, "--start", "-f", "-")
+	cmd := exec.Command("pg_recvlogical", "-w", "-h", pgHostName, "-U", pgUserName, "-d", "postgres", "-n", "--slot", slot, "--start", "-f", "-")
+	log.Println("Starting logical replication with command:", cmd.String())
 
 	out, err := cmd.StdoutPipe()
 	if err != nil {
@@ -46,6 +61,12 @@ var (
 )
 
 func main() {
+	pgHostName = os.Getenv("POSTGRES_HOST")
+	log.Println("Postgres host: ", pgHostName)
+
+	pgUserName = os.Getenv("POSTGRES_USER")
+	log.Println("Postgres user: ", pgUserName)
+
 	createPgSlot(slot)
 
 	out := startPgRecv(slot)
