@@ -1,4 +1,19 @@
 services:
+  postgres:
+    build:
+      context: ./custom-images
+      dockerfile: Dockerfile.postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    command: -c config_file=/etc/postgresql.conf
+    volumes:
+      - ./configs/postgresql.conf:/etc/postgresql.conf
+    ports:
+      - "5432:5432"
+
   broker:
     image: apache/kafka:latest
     hostname: broker
