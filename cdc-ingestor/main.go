@@ -6,6 +6,7 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"io"
 	"log"
+	"os"
 	"os/exec"
 )
 
@@ -41,8 +42,7 @@ func startPgRecv(slot string) io.ReadCloser {
 }
 
 var (
-	slot         = "test_slot"
-	topic string = "cdc-changes"
+	slot = "test_slot"
 )
 
 func main() {
@@ -51,7 +51,17 @@ func main() {
 	out := startPgRecv(slot)
 	defer out.Close()
 
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost"})
+	brokerAddr := os.Getenv("KAFKA_BROKER_ADDR")
+	if brokerAddr == "" {
+		brokerAddr = "localhost:9092"
+	}
+
+	topic := os.Getenv("KAFKA_TOPIC")
+	if topic == "" {
+		topic = "cdc-changes"
+	}
+
+	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": brokerAddr})
 	if err != nil {
 		panic(err)
 	}
