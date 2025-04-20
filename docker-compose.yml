@@ -1,4 +1,14 @@
 services:
+  cdc_topic_creator:
+    build:
+      context: ./cdc-topic-creator
+    environment:
+      KAFKA_TOPIC: cdc-changes
+      KAFKA_BROKER_ADDR: broker:29092
+    depends_on:
+      - broker
+    restart: on-failure
+
   cdc_consumer:
     build:
       context: ./cdc-consumer
@@ -12,6 +22,7 @@ services:
       - postgres
       - broker
       - cdc_ingestor
+      - cdc_topic_creator
 
   cdc_ingestor:
     build:
@@ -24,6 +35,7 @@ services:
     depends_on:
       - postgres
       - broker
+      - cdc_topic_creator
 
   postgres:
     build:
