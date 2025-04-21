@@ -1,4 +1,13 @@
 services:
+  cdc_webapp:
+    build:
+      context: ./cdc-webapp
+    env_file: "webapp.env"
+    ports:
+      - "3001:3000"
+    depends_on:
+      - cdc_consumer
+
   cdc_topic_creator:
     build:
       context: ./cdc-topic-creator

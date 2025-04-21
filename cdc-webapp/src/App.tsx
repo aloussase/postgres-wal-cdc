@@ -13,7 +13,7 @@ type MessageHandler = (message: Message) => void;
 
 const useWebSocket = (handler: MessageHandler) => {
   useEffect(() => {
-    const socket = new WebSocket('ws://localhost:8080');
+    const socket = new WebSocket(`ws://${import.meta.env.VITE_SERVER_HOST}:${import.meta.env.VITE_SERVER_PORT}`);
 
     socket.addEventListener('message', (message) => {
       const data = JSON.parse(message.data) as Message;
