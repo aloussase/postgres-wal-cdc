@@ -6,11 +6,11 @@ type MessageHandler = (message: Message) => void;
 export const useWebSocket = (handler: MessageHandler) => {
   useEffect(() => {
     try {
-      const proto = import.meta.env.DEV ? "ws" : "wss";
+      const proto = import.meta.env.VITE_SERVER_PROTO;
+      const host = import.meta.env.VITE_SERVER_HOST;
+      const port = import.meta.env.VITE_SERVER_PORT;
 
-      const socket = new WebSocket(
-        `${proto}://${import.meta.env.VITE_SERVER_HOST}:${import.meta.env.VITE_SERVER_PORT}`,
-      );
+      const socket = new WebSocket(`${proto}://${host}:${port}/ws`);
 
       socket.addEventListener("message", (message) => {
         const data = JSON.parse(message.data) as Message;
