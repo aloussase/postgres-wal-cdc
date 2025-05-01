@@ -10,7 +10,16 @@ export const createEndpoints = (pgClient) => {
     res.status(404).send();
   };
 
-  const deleteTodo = async (req, res) => {};
+  const deleteTodo = async (req, res) => {
+    const id = req.params.id;
+    const ok = await pgClient.deleteTodo(id);
+
+    if (ok) {
+      return res.status(204).send();
+    }
+
+    res.status(404).send();
+  };
 
   const updateTodo = async (req, res) => {};
 
@@ -25,7 +34,7 @@ export const createEndpoints = (pgClient) => {
     }
 
     console.log("There was a problem creating the todo");
-    res.status(404).send();
+    res.status(400).send();
   };
 
   return {
