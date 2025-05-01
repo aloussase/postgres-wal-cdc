@@ -1,73 +1,45 @@
-const { Kafka } = require('kafkajs');
-const { WebSocketServer } = require('ws');
+import { KafkaConfig, KafkaConsumer } from "./kafka-consumer.js";
+import { SocketServer } from "./socket-server.js";
+import { PgClient } from "./pgClient.js";
+import { createEndpoints } from "./endpoints.js";
+import express from "express";
+import { createServer } from "http";
 
-const topic = process.env.KAFKA_TOPIC || 'cdc-changes';
-const brokerAddr = process.env.KAFKA_BROKER_ADDR || 'localhost:9092';
+const topic = process.env.KAFKA_TOPIC || "cdc-changes";
+const brokerAddr = process.env.KAFKA_BROKER_ADDR || "localhost:9092";
 const serverPort = process.env.WS_SERVER_PORT || 8080;
+const dbUser = process.env.DB_USER || "postgres";
+const dbHost = process.env.DB_HOST || "postgres";
+const dbDatabase = process.env.DB_DATABASE || "postgres";
 
-const wss = new WebSocketServer({ port: serverPort });
-
-const kafka = new Kafka({
-  clientId: 'cdc-consumer',
-  brokers: [brokerAddr],
-})
-
-const connections = new Set();
-
-wss.on('connection', (ws) => {
-  connections.add(ws);
-
-  ws.on('close', () => {
-    console.log('Client disconnected');
-    connections.delete(ws);
-  })
-
-  ws.on('error', (err) => {
-    console.log('WS error', err);
-    connections.delete(ws);
-  })
-})
-
-
-const consumer = kafka.consumer({
-  groupId: 'cdc-group-1',
-  allowAutoTopicCreation: true,
+const pgClient = new PgClient({
+  user: dbUser,
+  host: dbHost,
+  database: dbDatabase,
 });
 
-(async function() {
-  await consumer.connect()
+const endpoints = createEndpoints(pgClient);
+const app = express();
 
-  await consumer.subscribe({
-    topic: topic,
-    fromBeginning: true,
-  })
+app.use(express.json());
 
-  await consumer.run({
-    eachMessage: async ({ message }) => {
-      if (connections.size === 0) {
-        console.log('No clients connected');
-        return;
-      }
+app.post("/todos/:id/toggle", endpoints.toggleTodo);
+app.delete("/todos/:id", endpoints.deleteTodo);
+app.patch("/todos/:id", endpoints.updateTodo);
+app.post("/todos", endpoints.addTodo);
 
-      const msg = message.value.toString()
-      const json = JSON.parse(msg).change[0]
+const server = createServer(app);
 
-      try {
-        const payload = {
-          kind: json.kind,
-          table: json.table,
-          columns: json.columnnames,
-          values: json.columnvalues,
-        }
+const socketServer = new SocketServer({ server });
+socketServer.start();
 
-        console.log('Sending message to clients:', payload);
+const kConfig = new KafkaConfig({
+  topic,
+  brokerAddr,
+  onMessage: (message) => socketServer.sendMessage(message),
+});
 
-        for (const ws of connections) {
-          ws.send(JSON.stringify(payload));
-        }
-      } catch (err) {
-        console.log('Error while processing change message', err)
-      }
-    },
-  })
-})()
+const kafkaConsumer = new KafkaConsumer(kConfig);
+kafkaConsumer.start();
+
+pgClient.start().then(() => server.listen(serverPort));

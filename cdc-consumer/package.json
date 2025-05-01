@@ -2,6 +2,7 @@
   "name": "cdc-consumer",
   "version": "1.0.0",
   "description": "Kafka consumer for CDC changes",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
@@ -12,7 +13,9 @@
   "author": "Alexander Goussas",
   "license": "MIT",
   "dependencies": {
+    "express": "^5.1.0",
     "kafkajs": "^2.2.4",
+    "pg": "^8.15.6",
     "ws": "^8.18.1"
   }
 }
