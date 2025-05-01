@@ -1,30 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 
 body {
-  font-family: "Roboto", sans-serif;
-  font-style: normal;
+    font-family: "Roboto", sans-serif;
 }
 
 .message {
-  border-radius: 10px;
-  padding: 10px;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
-  margin: 10px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.message-change-columns, .message-change-values {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+.message-change-columns,
+.message-change-values {
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .pill {
-  background-color: #007bff;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 20px;
-  display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    display: inline-block;
 }
