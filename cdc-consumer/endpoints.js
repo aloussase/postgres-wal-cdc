@@ -1,5 +1,14 @@
 export const createEndpoints = (pgClient) => {
-  const toggleTodo = async (req, res) => {};
+  const toggleTodo = async (req, res) => {
+    const id = req.params.id;
+    const ok = await pgClient.toggleTodo(id);
+
+    if (ok) {
+      return res.status(200).send();
+    }
+
+    res.status(404).send();
+  };
 
   const deleteTodo = async (req, res) => {};
 
