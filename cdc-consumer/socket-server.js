@@ -4,8 +4,8 @@ export class SocketServer {
   #webSocket;
   #connections;
 
-  constructor({ serverPort }) {
-    this.#webSocket = new WebSocketServer({ port: serverPort });
+  constructor({ server }) {
+    this.#webSocket = new WebSocketServer({ server, path: "/ws" });
     this.#connections = new Set();
   }
 
