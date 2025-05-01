@@ -21,7 +21,18 @@ export const createEndpoints = (pgClient) => {
     res.status(404).send();
   };
 
-  const updateTodo = async (req, res) => {};
+  const updateTodo = async (req, res) => {
+    const { title } = req.body;
+    const id = req.params.id;
+
+    const ok = await pgClient.updateTodo(id, title);
+
+    if (ok) {
+      return res.status(204).send();
+    }
+
+    res.status(404).send();
+  };
 
   const addTodo = async (req, res) => {
     const newTodo = req.body;
