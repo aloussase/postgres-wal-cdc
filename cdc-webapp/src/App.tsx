@@ -1,12 +1,12 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import { TodoApp } from "./todo/app.tsx";
+import { Navbar } from "./Navbar.tsx";
 
 function App() {
   return (
     <HashRouter>
       <Routes>
-        <Route path="*" element={<TodoApp />} />
+        <Route path="*" element={<Navbar />} />
       </Routes>
     </HashRouter>
   );

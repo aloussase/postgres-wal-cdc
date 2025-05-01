@@ -2,12 +2,13 @@ import { useState } from "react";
 import { useWebSocket } from "../hooks/useWebSocket";
 import { Message } from "../types/message";
 
-
 function Pill({ text }: { text: string }) {
   return <span className="pill">{text}</span>;
 }
 
-const AdminPage = () => {
+export const AdminPage = () => {
+  // TODO: Put messages on local storage.
+
   const [messages, setMessages] = useState<Message[]>([]);
 
   useWebSocket((message) => {
@@ -16,12 +17,7 @@ const AdminPage = () => {
   });
 
   return (
-    <div>
-      <nav>
-        <a href="https://github.com/aloussase/postgres-wal-cdc" target="_blank">
-          GitHub
-        </a>
-      </nav>
+    <div className="adminpanel">
       <h1>Database Audit Log</h1>
       <p>
         This sample application connects to a WebSocket server that uses Kafka
@@ -61,6 +57,3 @@ const AdminPage = () => {
     </div>
   );
 };
-
-
-export AdminPage;

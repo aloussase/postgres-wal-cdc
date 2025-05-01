@@ -14,10 +14,10 @@ export function TodoApp() {
   const [todos, dispatch] = useReducer(todoReducer, []);
 
   return (
-    <>
+    <div className="todoapp">
       <Header dispatch={dispatch} />
       <Main todos={todos} dispatch={dispatch} />
       <Footer todos={todos} dispatch={dispatch} />
-    </>
+    </div>
   );
 }
