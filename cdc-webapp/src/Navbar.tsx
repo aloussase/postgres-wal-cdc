@@ -1,11 +1,17 @@
-import React, { JSX } from "react";
+import React from "react";
 import { AdminPage } from "./admin";
 import { TodoApp } from "./todo/app";
+import { useWebSocket } from "./hooks/useWebSocket";
+import { useMessages } from "./hooks/useMessages";
 
-interface Props {}
-
-export const Navbar = (props: Props) => {
+export const Navbar = () => {
   const [isAdmin, setIsAdmin] = React.useState(false);
+  const { messages, addMessage } = useMessages();
+
+  useWebSocket((message) => {
+    console.log("Received message:", message);
+    addMessage(message);
+  });
 
   return (
     <>
@@ -43,7 +49,7 @@ export const Navbar = (props: Props) => {
           </label>
         </div>
       </nav>
-      <main>{isAdmin ? <AdminPage /> : <TodoApp />}</main>
+      <main>{isAdmin ? <AdminPage messages={messages} /> : <TodoApp />}</main>
     </>
   );
 };

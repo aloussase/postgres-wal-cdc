@@ -1,21 +1,14 @@
-import { useState } from "react";
-import { useWebSocket } from "../hooks/useWebSocket";
 import { Message } from "../types/message";
 
 function Pill({ text }: { text: string }) {
   return <span className="pill">{text}</span>;
 }
 
-export const AdminPage = () => {
-  // TODO: Put messages on local storage.
+interface Props {
+  messages: Message[];
+}
 
-  const [messages, setMessages] = useState<Message[]>([]);
-
-  useWebSocket((message) => {
-    console.log("Received message:", message);
-    setMessages((prevMessages) => [message, ...prevMessages]);
-  });
-
+export const AdminPage = ({ messages }: Props) => {
   return (
     <div className="adminpanel">
       <h1>Database Audit Log</h1>
