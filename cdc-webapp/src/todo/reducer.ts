@@ -33,31 +33,11 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-// This alphabet uses `A-Za-z0-9_-` symbols.
-// The order of characters is optimized for better gzip and brotli compression.
-// References to the same file (works both for gzip and brotli):
-// `'use`, `andom`, and `rict'`
-// References to the brotli default dictionary:
-// `-26T`, `1983`, `40px`, `75px`, `bush`, `jack`, `mind`, `very`, and `wolf`
-const urlAlphabet =
-  "useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
-
-function nanoid(size = 21): string {
-  let id = "";
-  // A compact alternative for `for (var i = 0; i < step; i++)`.
-  let i = size;
-  while (i--) {
-    // `| 0` is more compact and faster than `Math.floor()`.
-    id += urlAlphabet[(Math.random() * 64) | 0];
-  }
-  return id;
-}
-
 export const todoReducer = (state: Todo[], action: Action) => {
   switch (action.type) {
     case ADD_ITEM:
       return state.concat({
-        id: nanoid(),
+        id: action.payload.id!,
         title: action.payload.title!,
         completed: false,
       });

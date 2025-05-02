@@ -3,6 +3,7 @@ import { SocketServer } from "./socket-server.js";
 import { PgClient } from "./pgClient.js";
 import { createEndpoints } from "./endpoints.js";
 import express from "express";
+import cors from "cors";
 import { createServer } from "http";
 
 const topic = process.env.KAFKA_TOPIC || "cdc-changes";
@@ -21,6 +22,7 @@ const pgClient = new PgClient({
 const endpoints = createEndpoints(pgClient);
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.post("/todos/:id/toggle", endpoints.toggleTodo);
