@@ -1,10 +1,17 @@
+import { useServerUrl } from "./useServerUrl";
+
 export const useId = () => {
-  let counter = 0;
+  const { serverUrl } = useServerUrl();
+
+  const nextId = async () => {
+    const res = await fetch(`${serverUrl}/todos/id`);
+    const { id } = await res.json();
+    return id;
+  };
 
   return {
-    createId: () => {
-      counter += 1;
-      return counter;
+    createId: async () => {
+      return await nextId();
     },
   };
 };

@@ -5,6 +5,7 @@ import { createEndpoints } from "./endpoints.js";
 import express from "express";
 import cors from "cors";
 import { createServer } from "http";
+import { IdGenerator } from "./idGenerator.js";
 
 const topic = process.env.KAFKA_TOPIC || "cdc-changes";
 const brokerAddr = process.env.KAFKA_BROKER_ADDR || "localhost:9092";
@@ -19,12 +20,15 @@ const pgClient = new PgClient({
   database: dbDatabase,
 });
 
-const endpoints = createEndpoints(pgClient);
+const idGenerator = new IdGenerator();
+
+const endpoints = createEndpoints(idGenerator, pgClient);
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
+app.get("/todos/id", endpoints.generateId);
 app.get("/todos", endpoints.listTodos);
 app.post("/todos/:id/toggle", endpoints.toggleTodo);
 app.delete("/todos/:id", endpoints.deleteTodo);

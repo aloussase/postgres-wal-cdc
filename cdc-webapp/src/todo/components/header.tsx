@@ -12,7 +12,7 @@ export function Header({ dispatch }) {
   const addItem = useCallback(
     async (title: string) => {
       const todo = {
-        id: createId(),
+        id: await createId(),
         title,
         completed: false,
       };
