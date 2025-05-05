@@ -1,4 +1,9 @@
-export const createEndpoints = (pgClient) => {
+export const createEndpoints = (idGenerator, pgClient) => {
+  const generateId = async (req, res) => {
+    const id = idGenerator.newId();
+    return res.status(200).json({ id });
+  };
+
   const listTodos = async (req, res) => {
     const todos = await pgClient.listTodos();
     return res.status(200).json(todos);
@@ -54,6 +59,7 @@ export const createEndpoints = (pgClient) => {
   };
 
   return {
+    generateId,
     toggleTodo,
     deleteTodo,
     updateTodo,
