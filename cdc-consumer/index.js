@@ -25,6 +25,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get("/todos", endpoints.listTodos);
 app.post("/todos/:id/toggle", endpoints.toggleTodo);
 app.delete("/todos/:id", endpoints.deleteTodo);
 app.patch("/todos/:id", endpoints.updateTodo);

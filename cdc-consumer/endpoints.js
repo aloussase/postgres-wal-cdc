@@ -1,4 +1,9 @@
 export const createEndpoints = (pgClient) => {
+  const listTodos = async (req, res) => {
+    const todos = await pgClient.listTodos();
+    return res.status(200).json(todos);
+  };
+
   const toggleTodo = async (req, res) => {
     const id = req.params.id;
     const ok = await pgClient.toggleTodo(id);
@@ -53,5 +58,6 @@ export const createEndpoints = (pgClient) => {
     deleteTodo,
     updateTodo,
     addTodo,
+    listTodos,
   };
 };

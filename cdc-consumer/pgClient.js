@@ -17,6 +17,16 @@ export class PgClient {
   }
 
   /**
+   *
+   * @returns A list of all todos in the database.
+   */
+  async listTodos() {
+    const sql = "select id, title, completed from todos";
+    const res = await this.#client.query(sql);
+    return res.rows;
+  }
+
+  /**
    * Create a todo in the database.
    * @param {Todo} todo
    * @returns
